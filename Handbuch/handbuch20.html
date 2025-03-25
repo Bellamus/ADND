@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dein D&D PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,21 +23,36 @@
     <p>Hier kannst du das D&D PDF direkt ansehen:</p>
 
     <!-- Das PDF in einem iframe anzeigen -->
-    <iframe id="pdfViewer"></iframe>
+<canvas id="pdfCanvas"></canvas>
 
 <script>
-    // Hole die aktuelle URL
+    // PDF.js initialisieren
+    const url = "/HandbuchPDF/part_20.pdf";
+
+    // Hole die Seite aus der URL
     const urlParams = new URLSearchParams(window.location.hash.substring(1));
+    const pageNumber = parseInt(urlParams.get("page")) || 1;
 
-    // Hole die gewünschte Seitenzahl, standardmäßig 1
-    const page = urlParams.get("page") || 1;
+    // PDF laden und Seite anzeigen
+    pdfjsLib.getDocument(url).promise.then(pdf => {
+        pdf.getPage(pageNumber).then(page => {
+            const scale = 1.5;
+            const viewport = page.getViewport({ scale: scale });
 
-    // Setze die URL des PDFs mit dem page-Parameter
-    const pdfUrl = "/HandbuchPDF/part_20.pdf#page=" + page;
+            const canvas = document.getElementById("pdfCanvas");
+            const context = canvas.getContext("2d");
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
 
-    // Setze das src-Attribut des iframes
-    document.getElementById("pdfViewer").src = pdfUrl;
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            page.render(renderContext);
+        });
+    });
 </script>
+
 
 
 </body>
