@@ -16,20 +16,70 @@
             border: none;
         }
     </style>
+    <!-- PDF.js einbinden -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 </head>
 <body>
     <h1>Willkommen zum D&D PDF!</h1>
     <p>Hier kannst du das D&D PDF direkt ansehen:</p>
 
-    <!-- Das PDF in einem iframe anzeigen -->
-    
-    <!-- Das PDF in einem iframe anzeigen -->
-    <iframe id="pdfViewer" src="/HandbuchPDF/part_18.pdf" width="100%" height="600px"></iframe>
+    <!-- Das PDF in einem Container anzeigen -->
+    <div id="pdfContainer" style="width: 100%; height: 80vh;"></div>
+
     <script>
+        // PDF.js initialisieren
+        const url = '/HandbuchPDF/part_18.pdf';
+
+        // Funktion, die das PDF lädt
+        function loadPDF(pageNumber = 1) {
+            const pdfContainer = document.getElementById('pdfContainer');
+            pdfContainer.innerHTML = ''; // Vorherige Inhalte löschen
+
+            pdfjsLib.getDocument(url).promise.then(function(pdf) {
+                console.log('PDF geladen');
+                // Seite rendern
+                renderPage(pdf, pageNumber);
+            });
+        }
+
+        // Funktion, um die Seite zu rendern
+        function renderPage(pdf, pageNumber) {
+            pdf.getPage(pageNumber).then(function(page) {
+                const scale = 1.5; // Skalierung der Seite
+                const viewport = page.getViewport({ scale: scale });
+                
+                // Canvas erstellen und einfügen
+                const canvas = document.createElement('canvas');
+                pdfContainer.appendChild(canvas);
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                // Seite auf das Canvas rendern
+                page.render({
+                    canvasContext: context,
+                    viewport: viewport
+                });
+            });
+        }
+
+        // Beim Laden der Seite wird die erste Seite angezeigt
+        window.onload = function() {
+            loadPDF(1); // Erste Seite beim Start anzeigen
+        }
+
+        // Funktion zum Wechseln der Seiten
         function goToPage(pageNumber) {
-    var iframe = document.getElementById('pdfViewer');
-    iframe.src = "https://www.meine-website.de/wasauchimmer/beispiel.pdf#page=" + pageNumber;
-}
-</script>
+            loadPDF(pageNumber);
+        }
+
+        // Prüfen, ob ein Seitenparameter in der URL vorhanden ist
+        const urlParams = new URLSearchParams(window.location.hash.substring(1));
+        const page = urlParams.get('page');
+        if (page) {
+            loadPDF(parseInt(page));
+        }
+
+    </script>
 </body>
 </html>
