@@ -22,7 +22,22 @@
     <p>Hier kannst du das D&D PDF direkt ansehen:</p>
 
     <!-- Das PDF in einem iframe anzeigen -->
-    <iframe src="/HandbuchPDF/part_1.pdf"></iframe>
+    <iframe id="pdfViewer"></iframe>
+
+<script>
+    // Hole die aktuelle URL
+    const urlParams = new URLSearchParams(window.location.hash.substring(1));
+
+    // Hole die gewünschte Seitenzahl, standardmäßig 1
+    const page = urlParams.get("page") || 1;
+
+    // Setze die URL des PDFs mit dem page-Parameter
+    const pdfUrl = "/HandbuchPDF/part_1.pdf#page=" + page;
+
+    // Setze das src-Attribut des iframes
+    document.getElementById("pdfViewer").src = pdfUrl;
+</script>
+
 
 </body>
 </html>
