@@ -11,10 +11,11 @@
             text-align: center;
             padding: 20px;
         }
-        iframe {
+        canvas {
             width: 100%;
-            height: 80vh;
-            border: none;
+            max-width: 800px;
+            border: 1px solid black;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -22,51 +23,53 @@
     <h1>Willkommen zum D&D PDF!</h1>
     <p>Hier kannst du das D&D PDF direkt ansehen:</p>
 
-    <!-- Das PDF in einem iframe anzeigen -->
-<canvas id="pdfCanvas"></canvas>
+    <canvas id="pdfCanvas"></canvas>
 
-<script>
-    // PDF.js initialisieren
-    const url = "/HandbuchPDF/part_20.pdf";
+    <script>
+        const url = "/HandbuchPDF/part_20.pdf";
 
-    // Hole die Seite aus der URL
-    const urlParams = new URLSearchParams(window.location.hash.substring(1));
-    let pageNumber = parseInt(urlParams.get("page")) || 1;
-
-    console.log("Angeforderte Seite:", pageNumber); // Debugging
-
-    // PDF laden und Seite anzeigen
-    pdfjsLib.getDocument(url).promise.then(pdf => {
-        console.log("PDF erfolgreich geladen, Seitenanzahl:", pdf.numPages); // Debugging
-
-        // Sicherstellen, dass die Seite existiert
-        if (pageNumber < 1 || pageNumber > pdf.numPages) {
-            console.warn("Ungültige Seitenzahl, setze auf 1.");
-            pageNumber = 1;
+        function getPageNumberFromHash() {
+            const hash = window.location.hash;
+            const match = hash.match(/page=(\d+)/);
+            return match ? parseInt(match[1]) : 1;
         }
 
-        pdf.getPage(pageNumber).then(page => {
-            const scale = 1.5;
-            const viewport = page.getViewport({ scale: scale });
+        function renderPage(pdf, pageNumber) {
+            pdf.getPage(pageNumber).then(page => {
+                const scale = 1.5;
+                const viewport = page.getViewport({ scale });
 
-            const canvas = document.getElementById("pdfCanvas");
-            const context = canvas.getContext("2d");
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
+                const canvas = document.getElementById("pdfCanvas");
+                const context = canvas.getContext("2d");
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
 
-            const renderContext = {
-                canvasContext: context,
-                viewport: viewport
-            };
-            page.render(renderContext);
+                const renderContext = {
+                    canvasContext: context,
+                    viewport: viewport
+                };
+                page.render(renderContext);
+            }).catch(error => {
+                console.error("Fehler beim Rendern der Seite:", error);
+            });
+        }
+
+        pdfjsLib.getDocument(url).promise.then(pdf => {
+            const pageNumber = getPageNumberFromHash();
+            console.log("PDF erfolgreich geladen. Angeforderte Seite:", pageNumber);
+            renderPage(pdf, pageNumber);
+        }).catch(error => {
+            console.error("Fehler beim Laden des PDFs:", error);
         });
-    }).catch(error => {
-        console.error("Fehler beim Laden des PDFs:", error);
-    });
-</script>
 
-
-
-
+        // Falls sich die URL ändert (z. B. beim Wechsel der Seite in Discord), neu rendern
+        window.addEventListener("hashchange", () => {
+            pdfjsLib.getDocument(url).promise.then(pdf => {
+                const pageNumber = getPageNumberFromHash();
+                console.log("Hash geändert. Neue Seite:", pageNumber);
+                renderPage(pdf, pageNumber);
+            });
+        });
+    </script>
 </body>
 </html>
