@@ -22,7 +22,14 @@
     <p>Hier kannst du das D&D PDF direkt ansehen:</p>
 
     <!-- Das PDF in einem iframe anzeigen -->
-    <iframe src="/HandbuchPDF/part_18.pdf"></iframe>
-
+    
+    <!-- Das PDF in einem iframe anzeigen -->
+    <iframe id="pdfViewer" src="/HandbuchPDF/part_18.pdf" width="100%" height="600px"></iframe>
+    <script>
+        function goToPage(pageNumber) {
+    var iframe = document.getElementById('pdfViewer');
+    iframe.src = "https://www.meine-website.de/wasauchimmer/beispiel.pdf#page=" + pageNumber;
+}
+</script>
 </body>
 </html>
