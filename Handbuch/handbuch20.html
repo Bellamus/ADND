@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dein D&D PDF</title>
+    <!-- PDF.js über ein funktionierendes CDN laden -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
     <style>
         body {
@@ -13,15 +14,18 @@
         }
         canvas {
             width: 100%;
-            max-width: 800px;
-            border: 1px solid black;
-            margin-top: 10px;
+            height: auto;
+            border: 1px solid #ccc;
         }
     </style>
 </head>
 <body>
+    <h1>Willkommen zum D&D PDF!</h1>
+    <p>Hier kannst du das D&D PDF direkt ansehen:</p>
 
-        <script>
+    <canvas id="pdfCanvas"></canvas>
+
+    <script>
         const url = "/HandbuchPDF/part_20.pdf";
 
         function getPageNumberFromHash() {
@@ -67,10 +71,5 @@
             });
         });
     </script>
-    
-    <h1>Willkommen zum D&D PDF!</h1>
-    <p>Hier kannst du das D&D PDF direkt ansehen:</p>
-
-    <canvas id="pdfCanvas"></canvas>
 </body>
 </html>
