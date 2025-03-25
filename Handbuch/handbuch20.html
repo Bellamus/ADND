@@ -31,10 +31,20 @@
 
     // Hole die Seite aus der URL
     const urlParams = new URLSearchParams(window.location.hash.substring(1));
-    const pageNumber = parseInt(urlParams.get("page")) || 1;
+    let pageNumber = parseInt(urlParams.get("page")) || 1;
+
+    console.log("Angeforderte Seite:", pageNumber); // Debugging
 
     // PDF laden und Seite anzeigen
     pdfjsLib.getDocument(url).promise.then(pdf => {
+        console.log("PDF erfolgreich geladen, Seitenanzahl:", pdf.numPages); // Debugging
+
+        // Sicherstellen, dass die Seite existiert
+        if (pageNumber < 1 || pageNumber > pdf.numPages) {
+            console.warn("Ungültige Seitenzahl, setze auf 1.");
+            pageNumber = 1;
+        }
+
         pdf.getPage(pageNumber).then(page => {
             const scale = 1.5;
             const viewport = page.getViewport({ scale: scale });
@@ -50,8 +60,11 @@
             };
             page.render(renderContext);
         });
+    }).catch(error => {
+        console.error("Fehler beim Laden des PDFs:", error);
     });
 </script>
+
 
 
 
