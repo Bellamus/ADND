@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Mode Website</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AD&D Archiv</h1>
+            <p>Mögen die Würfel mit euch sein.</p>
+        </header>
+
+        <ul class="link-list">
+            <li><a href="/Handbuch/handbuch1.html">Handbuch Teil 1</a></li>
+            <li><a href="/Handbuch/handbuch2.html">Handbuch Teil 2</a></li>
+            <li><a href="/Handbuch/handbuch3.html">Handbuch Teil 3</a></li>
+            <li><a href="/Handbuch/handbuch4.html">Handbuch Teil 4</a></li>
+            <li><a href="/Handbuch/handbuch5.html">Handbuch Teil 5</a></li>
+            <li><a href="/Handbuch/handbuch6.html">Handbuch Teil 6</a></li>
+            <li><a href="/Handbuch/handbuch7.html">Handbuch Teil 7</a></li>
+            <li><a href="/Handbuch/handbuch8.html">Handbuch Teil 8</a></li>
+            <li><a href="/Handbuch/handbuch9.html">Handbuch Teil 9</a></li>
+            <li><a href="/Handbuch/handbuch10.html">Handbuch Teil 10</a></li>
+            <li><a href="/Handbuch/handbuch11.html">Handbuch Teil 11</a></li>
+            <li><a href="/Handbuch/handbuch12.html">Handbuch Teil 12</a></li>
+            <li><a href="/Handbuch/handbuch13.html">Handbuch Teil 13</a></li>
+            <li><a href="/Handbuch/handbuch14.html">Handbuch Teil 14</a></li>
+            <li><a href="/Handbuch/handbuch15.html">Handbuch Teil 15</a></li>
+            <li><a href="/Handbuch/handbuch16.html">Handbuch Teil 16</a></li>
+            <li><a href="/Handbuch/handbuch17.html">Handbuch Teil 17</a></li>
+            <li><a href="/Handbuch/handbuch18.html">Handbuch Teil 18</a></li>
+            <li><a href="/Handbuch/handbuch19.html">Handbuch Teil 19</a></li>
+            <li><a href="/Handbuch/handbuch20.html">Handbuch Teil 20</a></li>
+        </ul>
+    </div>
+
+    <script>
+        // Optionale JavaScript-Funktionalitäten
+        document.querySelectorAll('.link-list a').forEach(link => {
+            link.addEventListener('mouseover', () => {
+                link.style.color = '#ff8c00'; // Highlight on hover
+            });
+            link.addEventListener('mouseout', () => {
+                link.style.color = '#f1f1f1'; // Reset color
+            });
+        });
+    </script>
+</body>
+</html>
