@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dein D&D PDF</title>
     <!-- PDF.js über ein funktionierendes CDN laden -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,51 +24,55 @@
 
     <canvas id="pdfCanvas"></canvas>
 
-    <script>
-        const url = "/HandbuchPDF/part_20.pdf";
+   <script type="module">
+    import * as pdfjsLib from "/HandbuchPDF/pdf.mjs";
 
-        function getPageNumberFromHash() {
-            const hash = window.location.hash;
-            const match = hash.match(/page=(\d+)/);
-            return match ? parseInt(match[1]) : 1;
-        }
+    pdfjsLib.GlobalWorkerOptions.workerSrc = "/HandbuchPDF/pdf.worker.mjs";
 
-        function renderPage(pdf, pageNumber) {
-            pdf.getPage(pageNumber).then(page => {
-                const scale = 1.5;
-                const viewport = page.getViewport({ scale });
+    const url = "/HandbuchPDF/part_20.pdf";
 
-                const canvas = document.getElementById("pdfCanvas");
-                const context = canvas.getContext("2d");
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
+    function getPageNumberFromHash() {
+        const hash = window.location.hash;
+        const match = hash.match(/page=(\d+)/);
+        return match ? parseInt(match[1]) : 1;
+    }
 
-                const renderContext = {
-                    canvasContext: context,
-                    viewport: viewport
-                };
-                page.render(renderContext);
-            }).catch(error => {
-                console.error("Fehler beim Rendern der Seite:", error);
-            });
-        }
+    function renderPage(pdf, pageNumber) {
+        pdf.getPage(pageNumber).then(page => {
+            const scale = 1.5;
+            const viewport = page.getViewport({ scale });
 
+            const canvas = document.getElementById("pdfCanvas");
+            const context = canvas.getContext("2d");
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            page.render(renderContext);
+        }).catch(error => {
+            console.error("Fehler beim Rendern der Seite:", error);
+        });
+    }
+
+    pdfjsLib.getDocument(url).promise.then(pdf => {
+        const pageNumber = getPageNumberFromHash();
+        console.log("PDF erfolgreich geladen. Angeforderte Seite:", pageNumber);
+        renderPage(pdf, pageNumber);
+    }).catch(error => {
+        console.error("Fehler beim Laden des PDFs:", error);
+    });
+
+    window.addEventListener("hashchange", () => {
         pdfjsLib.getDocument(url).promise.then(pdf => {
             const pageNumber = getPageNumberFromHash();
-            console.log("PDF erfolgreich geladen. Angeforderte Seite:", pageNumber);
+            console.log("Hash geändert. Neue Seite:", pageNumber);
             renderPage(pdf, pageNumber);
-        }).catch(error => {
-            console.error("Fehler beim Laden des PDFs:", error);
         });
+    });
+</script>
 
-        // Falls sich die URL ändert (z. B. beim Wechsel der Seite in Discord), neu rendern
-        window.addEventListener("hashchange", () => {
-            pdfjsLib.getDocument(url).promise.then(pdf => {
-                const pageNumber = getPageNumberFromHash();
-                console.log("Hash geändert. Neue Seite:", pageNumber);
-                renderPage(pdf, pageNumber);
-            });
-        });
-    </script>
 </body>
 </html>
